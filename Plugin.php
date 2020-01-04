@@ -10,6 +10,13 @@ use System\Classes\PluginBase;
 class Plugin extends PluginBase
 {
     /**
+     * @var array Plugin dependencies.
+     */
+    public $require = [
+        'RainLab.Blog',
+    ];
+
+    /**
      * Returns information about this plugin.
      *
      * @return array

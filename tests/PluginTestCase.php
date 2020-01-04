@@ -1,6 +1,6 @@
 <?php
 
-namespace Bedard\RainLabUserApi\Tests;
+namespace Bedard\RainLabBlogApi\Tests;
 
 use App;
 use Faker\Generator;
@@ -10,6 +10,13 @@ use System\Classes\PluginManager;
 
 class PluginTestCase extends BasePluginTestCase
 {
+    /**
+     * @var array Plugins to refresh between tests.
+     */
+    protected $refreshPlugins = [
+        'RainLab.Blog',
+    ];
+
     /**
      * Set up function, called before each test.
      *
