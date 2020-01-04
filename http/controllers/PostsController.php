@@ -32,8 +32,6 @@ class PostsController extends ApiController
             'published'=> !$this->checkEditor(),
         ]);
 
-        return $posts;
-
         return Arr::only($posts->toArray(), [
             'current_page',
             'data',
