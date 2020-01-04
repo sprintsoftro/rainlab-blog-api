@@ -1,6 +1,7 @@
-<?php namespace Bedard\RainLabBlogApi;
+<?php
 
-use Backend;
+namespace Bedard\RainLabBlogApi;
+
 use System\Classes\PluginBase;
 
 /**
@@ -16,81 +17,11 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name'        => 'RainLabBlogApi',
-            'description' => 'No description provided yet...',
-            'author'      => 'Bedard',
-            'icon'        => 'icon-leaf'
-        ];
-    }
-
-    /**
-     * Register method, called when the plugin is first registered.
-     *
-     * @return void
-     */
-    public function register()
-    {
-
-    }
-
-    /**
-     * Boot method, called right before the request route.
-     *
-     * @return array
-     */
-    public function boot()
-    {
-
-    }
-
-    /**
-     * Registers any front-end components implemented in this plugin.
-     *
-     * @return array
-     */
-    public function registerComponents()
-    {
-        return []; // Remove this line to activate
-
-        return [
-            'Bedard\RainLabBlogApi\Components\MyComponent' => 'myComponent',
-        ];
-    }
-
-    /**
-     * Registers any back-end permissions used by this plugin.
-     *
-     * @return array
-     */
-    public function registerPermissions()
-    {
-        return []; // Remove this line to activate
-
-        return [
-            'bedard.rainlabblogapi.some_permission' => [
-                'tab' => 'RainLabBlogApi',
-                'label' => 'Some permission'
-            ],
-        ];
-    }
-
-    /**
-     * Registers back-end navigation items for this plugin.
-     *
-     * @return array
-     */
-    public function registerNavigation()
-    {
-        return []; // Remove this line to activate
-
-        return [
-            'rainlabblogapi' => [
-                'label'       => 'RainLabBlogApi',
-                'url'         => Backend::url('bedard/rainlabblogapi/mycontroller'),
-                'icon'        => 'icon-leaf',
-                'permissions' => ['bedard.rainlabblogapi.*'],
-                'order'       => 500,
-            ],
+            'author'      => 'Scott Bedard',
+            'description' => 'A simple and extendable HTTP API for RainLab.Blog',
+            'homepage'    => 'https://github.com/scottbedard/rainlab-blog-api',
+            'icon'        => 'icon-pencil',
+            'name'        => 'RainLab.Blog API',
         ];
     }
 }
