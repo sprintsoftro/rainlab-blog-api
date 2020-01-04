@@ -1,0 +1,47 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/php:7.3-cli
+    steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get install libpng-dev
+      - run:
+          name: Install PHP Extensions
+          command: sudo docker-php-ext-install gd
+      - run:
+          name: Clone October
+          command: |
+            git clone https://github.com/octobercms/october.git
+      - run:
+          name: Install plugins
+          command: |
+            git clone -b ${CIRCLE_BRANCH} https://github.com/scottbedard/rainlab-blog-api ./october/plugins/bedard/rainlabblogapi
+            git clone https://github.com/rainlab/blog-plugin.git ./october/plugins/rainlab/blog
+      - restore_cache:
+          key: -v3-{{ checksum "october/composer.json" }}-{{ checksum "october/plugins/bedard/rainlabblogapi/composer.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            (cd ./october && composer install)
+            (cd ./october/plugins/bedard/rainlabblogapi && composer install)
+      - save_cache:
+          key: -v3-{{ checksum "october/composer.json" }}-{{ checksum "october/plugins/bedard/rainlabblogapi/composer.lock" }}
+          paths:
+            - "october/vendor"
+            - "october/plugins/bedard/rainlabblogapi/vendor"
+      - run:
+          name: Test
+          command: |
+            cd ./october/plugins/bedard/rainlabblogapi
+            phpdbg -qrr vendor/bin/phpunit -d memory_limit=512M --coverage-clover clover.xml
+      - run:
+          name: Codecov
+          command: |
+            cd ./october/plugins/bedard/rainlabblogapi
+            bash <(curl -s https://codecov.io/bash) -v -cF php
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - test
