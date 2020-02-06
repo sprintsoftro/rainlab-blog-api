@@ -10,6 +10,11 @@ use RainLab\Blog\Models\Settings;
 
 class PostsController extends ApiController
 {
+    /**
+     * Determine if the user has edit permissions.
+     *
+     * @return boolean
+     */
     protected function checkEditor()
     {
         $backendUser = BackendAuth::getUser();
