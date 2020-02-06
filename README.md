@@ -21,3 +21,15 @@ By default, all routes are grouped behind a `/api/rainlab/blog` prefix. To overr
 ```
 RAINLAB_BLOG_API_PREFIX="/your/custom/prefix"
 ```
+
+To disable the API completely, set the following environment variable.
+
+```
+RAINLAB_BLOG_API_ENABLE=false
+```
+
+## License
+
+[MIT](https://github.com/scottbedard/rainlab-blog-api/blob/master/LICENSE)
+
+Copyright (c) 2020-present, Scott Bedard.
