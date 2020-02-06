@@ -12,8 +12,6 @@ class CategoriesControllerTest extends PluginTestCase
     //
     public function test_fetching_categories()
     {
-        Category::truncate();
-
         $category = factory(Category::class)->create();
         $response = $this->get('/api/rainlab/blog/categories');
         $response->assertStatus(200);

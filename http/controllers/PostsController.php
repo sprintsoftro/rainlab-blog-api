@@ -46,4 +46,24 @@ class PostsController extends ApiController
             'total',
         ]);
     }
+
+    /**
+     * Show a post.
+     *
+     * @return \RainLab\Blog\Models\Post
+     */
+    public function show($slug)
+    {
+        $post = new Post;
+
+        $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
+            ? $post->transWhere('slug', $slug)
+            : $post->where('slug', $slug);
+
+        if (!$this->checkEditor()) {
+            $post = $post->isPublished();
+        }
+
+        return $post->firstOrFail();
+    }
 }

@@ -7,6 +7,8 @@ use Faker\Generator;
 use Illuminate\Database\Eloquent\Factory;
 use PluginTestCase as BasePluginTestCase;
 use System\Classes\PluginManager;
+use RainLab\Blog\Models\Category;
+use RainLab\Blog\Models\Post;
 
 class PluginTestCase extends BasePluginTestCase
 {
@@ -35,6 +37,9 @@ class PluginTestCase extends BasePluginTestCase
         $pluginManager = PluginManager::instance();
         $pluginManager->registerAll(true);
         $pluginManager->bootAll(true);
+
+        Category::truncate();
+        Post::truncate();
     }
 
     /**

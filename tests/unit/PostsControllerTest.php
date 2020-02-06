@@ -3,6 +3,7 @@
 namespace Bedard\RainLabBlogApi\Tests\Unit;
 
 use Bedard\RainLabBlogApi\Tests\PluginTestCase;
+use RainLab\Blog\Models\Category;
 use RainLab\Blog\Models\Post;
 
 class PostsControllerTest extends PluginTestCase
@@ -23,5 +24,19 @@ class PostsControllerTest extends PluginTestCase
         $this->assertEquals(6, $data['from']);
         $this->assertEquals(10, $data['to']);
         $this->assertEquals(20, $data['total']);
+    }
+
+    //
+    // show
+    //
+    public function test_fetching_a_post()
+    {
+        $post = factory(Post::class)->create();
+
+        $response = $this->get("/api/rainlab/blog/posts/{$post->slug}");
+        $response->assertStatus(200);
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertEquals($post->id, $data['id']);
     }
 }
