@@ -6,7 +6,10 @@ use BackendAuth;
 use Bedard\RainLabBlogApi\Classes\ApiController;
 use Illuminate\Support\Arr;
 use RainLab\Blog\Models\Post;
+use RainLab\Blog\Models\SiblingPost;
+// use Bedard\RainLabBlogApi\Models\Post;
 use RainLab\Blog\Models\Settings;
+use Illuminate\Support\Facades\DB;
 
 class PostsController extends ApiController
 {
@@ -31,13 +34,13 @@ class PostsController extends ApiController
      */
     public function index()
     {
-        $posts = Post::with('categories')->listFrontEnd([
+        $posts = Post::orderBy('published_at','desc')->with('categories', 'user', 'featured_images')->listFrontEnd([
             'page' => input('page', 1),
-            'perPage' => input('perPage', 10),
-            'published'=> !$this->checkEditor(),
+            'perPage' => input('perPage', 12),
+            'category' => input('category')
         ]);
 
-        return Arr::only($posts->toArray(), [
+        $posts =  Arr::only($posts->toArray(), [
             'current_page',
             'data',
             'from',
@@ -45,6 +48,10 @@ class PostsController extends ApiController
             'to',
             'total',
         ]);
+
+        //dd($posts);
+        return $posts;
+
     }
 
     /**
@@ -56,14 +63,39 @@ class PostsController extends ApiController
     {
         $post = new Post;
 
+
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
-            ? $post->transWhere('slug', $slug)
-            : $post->where('slug', $slug);
+            ? $post->transWhere('slug', $slug)->with('user', 'featured_images')
+            : $post->where('slug', $slug)->with('user', 'featured_images');
 
         if (!$this->checkEditor()) {
             $post = $post->isPublished();
         }
 
-        return $post->firstOrFail();
+        $post = $post->firstOrFail();
+
+        $next_post=$post->nextPost();
+
+        if ($next_post) {
+
+            $next_post = Post::with('featured_images')->where('id',$next_post->id)->first();
+
+        }
+
+        $post->setAttribute('next_post', $next_post);
+
+        $previous_post = $post->previousPost();
+
+        if ($previous_post) {
+
+            $previous_post = Post::with('featured_images')->where('id',$previous_post->id)->first();
+
+        }
+
+        $post->setAttribute('previous_post', $previous_post);
+
+        return $post;
     }
+
+
 }
