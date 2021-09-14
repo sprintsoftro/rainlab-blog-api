@@ -39,7 +39,7 @@ class PostsController extends ApiController
             'perPage' => input('perPage', 12),
             'category' => input('category')
         ]);
-
+        
         $posts =  Arr::only($posts->toArray(), [
             'current_page',
             'data',
@@ -62,7 +62,7 @@ class PostsController extends ApiController
     public function show($slug)
     {
         $post = new Post;
-
+ 
 
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
             ? $post->transWhere('slug', $slug)->with('user', 'featured_images')
@@ -97,5 +97,5 @@ class PostsController extends ApiController
         return $post;
     }
 
-
+    
 }
