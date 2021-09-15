@@ -21,4 +21,23 @@ class CategoriesController extends ApiController
 
         return $categories;
     }
+    /**
+     * List categories.
+     *
+     * @return array
+     */
+    public function show($slug)
+    {
+        $category = Category::where('slug', $slug)->first();
+        $arCategory = [
+            "id"        => $category->id,
+            "name"      => $category->name,
+            "slug"      => $category->slug,
+            "code"      => $category->code,
+            "description"       => $category->description,
+            'posts' => $category->posts,
+        ];
+
+        return $arCategory;
+    }
 }
