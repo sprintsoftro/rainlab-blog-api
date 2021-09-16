@@ -34,12 +34,13 @@ class PostsController extends ApiController
      */
     public function index()
     {
-        $posts = Post::orderBy('published_at','desc')->with('categories', 'user', 'featured_images')->listFrontEnd([
-            'page' => input('page', 1),
-            'perPage' => input('perPage', 12),
-            'category' => input('category')
-        ]);
-        
+        $posts = Post::orderBy('published_at','desc')
+            ->with('categories', 'user', 'featured_images')
+            ->listFrontEnd([
+                'page' => input('page', 1),
+                'perPage' => input('perPage', 12),
+                'category' => input('category')
+            ]);
         $posts =  Arr::only($posts->toArray(), [
             'current_page',
             'data',
@@ -62,34 +63,25 @@ class PostsController extends ApiController
     public function show($slug)
     {
         $post = new Post;
- 
-
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
-            ? $post->transWhere('slug', $slug)->with('user', 'featured_images')
-            : $post->where('slug', $slug)->with('user', 'featured_images');
+            ? $post->transWhere('slug', $slug)->with('user', 'featured_images', 'header_image',)
+            : $post->where('slug', $slug)->with('user', 'featured_images', 'header_image');
 
         if (!$this->checkEditor()) {
             $post = $post->isPublished();
         }
 
         $post = $post->firstOrFail();
-
         $next_post=$post->nextPost();
-
         if ($next_post) {
-
             $next_post = Post::with('featured_images')->where('id',$next_post->id)->first();
-
         }
 
         $post->setAttribute('next_post', $next_post);
-
         $previous_post = $post->previousPost();
 
         if ($previous_post) {
-
             $previous_post = Post::with('featured_images')->where('id',$previous_post->id)->first();
-
         }
 
         $post->setAttribute('previous_post', $previous_post);
@@ -97,5 +89,5 @@ class PostsController extends ApiController
         return $post;
     }
 
-    
+
 }
