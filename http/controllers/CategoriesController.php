@@ -35,7 +35,7 @@ class CategoriesController extends ApiController
             "slug"          => $category->slug,
             "code"          => $category->code,
             "description"   => $category->description,
-            "header_image"  => $category->header_image->getPath(),
+            "header_image"  => $category->header_image ? $category->header_image->getPath() : null,
             'posts'         => $category->posts,
         ];
 
