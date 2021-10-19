@@ -64,8 +64,8 @@ class PostsController extends ApiController
     {
         $post = new Post;
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
-            ? $post->transWhere('slug', $slug)->with('user', 'featured_images', 'header_image')
-            : $post->where('slug', $slug)->with('user', 'featured_images', 'header_image');
+            ? $post->transWhere('slug', $slug)->with('user', 'featured_images', 'header_image', 'seostorm_options')
+            : $post->where('slug', $slug)->with('user', 'featured_images', 'header_image', 'seostorm_options');
 
         if (!$this->checkEditor()) {
             $post = $post->isPublished();
