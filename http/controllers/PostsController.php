@@ -6,10 +6,8 @@ use BackendAuth;
 use Bedard\RainLabBlogApi\Classes\ApiController;
 use Illuminate\Support\Arr;
 use RainLab\Blog\Models\Post;
-use RainLab\Blog\Models\SiblingPost;
-// use Bedard\RainLabBlogApi\Models\Post;
 use RainLab\Blog\Models\Settings;
-use Illuminate\Support\Facades\DB;
+use Initbiz\SeoStorm\Models\Settings as SeoStormSettings;
 
 class PostsController extends ApiController
 {
@@ -85,6 +83,26 @@ class PostsController extends ApiController
         }
 
         $post->setAttribute('previous_post', $previous_post);
+        
+        if(isset($post->seostorm_options->options)) {
+
+            $meta_options = $post->seostorm_options->options;
+            
+            if(empty($meta_options['meta_title'])) {
+                $meta_options['meta_title'] = $post->title; 
+            }
+
+            if(empty($meta_options['og_title'])) {
+                $meta_options['og_title'] = $meta_options['meta_title']; 
+            }
+
+            if($post->seostorm_options->options['site_name']) {
+                $meta_options['meta_title'] = SeoStormSettings::get('site_name') .' - '. $meta_options['meta_title'];
+                $meta_options['og_title'] = SeoStormSettings::get('site_name') .' - '. $meta_options['og_title'];
+            }
+        
+            $post->seostorm_options->options = $meta_options;
+        }
 
         return $post;
     }
