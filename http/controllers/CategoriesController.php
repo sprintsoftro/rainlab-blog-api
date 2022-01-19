@@ -2,11 +2,8 @@
 
 namespace Bedard\RainLabBlogApi\Http\Controllers;
 
-use BackendAuth;
 use Bedard\RainLabBlogApi\Classes\ApiController;
-use Illuminate\Support\Arr;
 use RainLab\Blog\Models\Category;
-use RainLab\Blog\Models\Settings;
 use System\Classes\PluginManager;
 
 class CategoriesController extends ApiController
@@ -36,7 +33,7 @@ class CategoriesController extends ApiController
             "slug"          => $category->slug,
             "code"          => $category->code,
             "description"   => $category->description,
-            "header_image"  => $category->header_image ? $category->header_image->getPath() : null,
+            "header_image"  => $category->header_image ? $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']) : null,
             'posts'         => $category->posts,
             'seo_params'    =>  $this->formatSeoParam($category)
         ];
@@ -57,9 +54,9 @@ class CategoriesController extends ApiController
                 $arSeoParam['seo_description'] = strip_tags($category->description);
             }
             if(!empty($category->preview_image)) {
-                $arSeoParam['image'] = $category->preview_image->getPath();
+                $arSeoParam['image'] = $category->preview_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
             } elseif(!empty($category->header_image)) {
-                $arSeoParam['image'] = $category->header_image->getPath();
+                $arSeoParam['image'] = $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
             }
             if(empty($arSeoParam['canonical_url'])) {
                 $arSeoParam['canonical_url'] = '/blog-seminee/' . $category->slug;

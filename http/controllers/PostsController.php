@@ -38,8 +38,9 @@ class PostsController extends ApiController
                 'page' => input('page', 1),
                 'perPage' => input('perPage', 12),
                 'category' => input('category')
-            ]);
-        $posts =  Arr::only($posts->toArray(), [
+        ]);
+
+        $arPosts =  Arr::only($posts->toArray(), [
             'current_page',
             'data',
             'from',
@@ -48,8 +49,24 @@ class PostsController extends ApiController
             'total',
         ]);
 
-        //dd($posts);
-        return $posts;
+        // Change image format to webp for performance
+        foreach ($posts as $key => $post) {
+            foreach ($post->featured_images as $key1 => $image) {
+                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+            }
+            // Only necessary data
+            $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], [
+                'id',
+                'title',
+                'slug',
+                'featured_images',
+                'published',
+                'published_at',
+                'user',
+            ]);
+        }
+
+        return $arPosts;
 
     }
 
@@ -70,20 +87,49 @@ class PostsController extends ApiController
         }
 
         $post = $post->firstOrFail();
-        $next_post=$post->nextPost();
-        if ($next_post) {
-            $next_post = Post::with('featured_images')->where('id',$next_post->id)->first();
-        }
-
-        $post->setAttribute('next_post', $next_post);
-        $previous_post = $post->previousPost();
-
-        if ($previous_post) {
-            $previous_post = Post::with('featured_images')->where('id',$previous_post->id)->first();
-        }
-
-        $post->setAttribute('previous_post', $previous_post);
         
+        // Get next Post
+        $arNextPost = NULL;
+        $nextPost = $post->nextPost();
+
+        if ($nextPost) {
+            $featuredImages = $nextPost->featured_images;
+            $arNextPost = $nextPost->toArray();
+            foreach ($featuredImages as $key => $image) {
+                $arNextPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+            }
+            $arNextPost = Arr::only($arNextPost, [
+                'id',
+                'featured_images',
+                'title',
+                'slug'
+            ]);
+        }
+
+        $post->setAttribute('next_post', $arNextPost);
+        
+
+        // Get Previous Post
+        $arPrevPost = NULL;
+        $previousPost = $post->previousPost();
+
+        if ($previousPost) {
+            $featuredImages = $previousPost->featured_images;
+            $arPrevPost = $previousPost->toArray();
+            foreach ($featuredImages as $key => $image) {
+                $arPrevPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+            }
+            $arPrevPost = Arr::only($arPrevPost, [
+                'id',
+                'featured_images',
+                'title',
+                'slug'
+            ]);
+        }
+
+        $post->setAttribute('previous_post', $arPrevPost);
+        
+        // Get Seo Data
         if(isset($post->seostorm_options->options)) {
 
             $meta_options = $post->seostorm_options->options;
@@ -104,7 +150,20 @@ class PostsController extends ApiController
             $post->seostorm_options->options = $meta_options;
         }
 
-        return $post;
+        // Format images to WEBP
+        $arPost = $post->toArray();
+
+        // Format featured_images
+        foreach ($post->featured_images as $key => $image) {
+            $arPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+        }
+
+        // Format header_image
+        $arPost['header_image']['path'] = $post->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+
+        unset($arPost['content_html']);
+        
+        return $arPost;
     }
 
 
