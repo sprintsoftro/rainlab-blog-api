@@ -52,7 +52,7 @@ class PostsController extends ApiController
         // Change image format to webp for performance
         foreach ($posts as $key => $post) {
             foreach ($post->featured_images as $key1 => $image) {
-                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(500, 200, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
             }
             // Only necessary data
             $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], [
@@ -96,7 +96,7 @@ class PostsController extends ApiController
             $featuredImages = $nextPost->featured_images;
             $arNextPost = $nextPost->toArray();
             foreach ($featuredImages as $key => $image) {
-                $arNextPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arNextPost['featured_images'][$key]['path'] = $image->getThumb(500, 200, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
             }
             $arNextPost = Arr::only($arNextPost, [
                 'id',
@@ -117,7 +117,7 @@ class PostsController extends ApiController
             $featuredImages = $previousPost->featured_images;
             $arPrevPost = $previousPost->toArray();
             foreach ($featuredImages as $key => $image) {
-                $arPrevPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arPrevPost['featured_images'][$key]['path'] = $image->getThumb(500, 200, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
             }
             $arPrevPost = Arr::only($arPrevPost, [
                 'id',
@@ -155,11 +155,13 @@ class PostsController extends ApiController
 
         // Format featured_images
         foreach ($post->featured_images as $key => $image) {
-            $arPost['featured_images'][$key]['path'] = $image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+            $arPost['featured_images'][$key]['path'] = $image->getThumb(500, 200, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
         }
 
         // Format header_image
-        $arPost['header_image']['path'] = $post->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+        $arPost['header_image']['path'] = $post->header_image 
+            ? $post->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']) 
+            : $image->getThumb(0, 0, ['quality' => 100, 'extension' => 'webp']);
 
         unset($arPost['content_html']);
         
