@@ -52,7 +52,7 @@ class PostsController extends ApiController
         // Change image format to webp for performance
         foreach ($posts as $key => $post) {
             foreach ($post->featured_images as $key1 => $image) {
-                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(500, 200, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(256, 158, ['mode' => 'fit', 'quality' => 100, 'extension' => 'webp']);
             }
             // Only necessary data
             $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], [
