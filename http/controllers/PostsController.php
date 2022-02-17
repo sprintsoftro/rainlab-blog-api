@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use RainLab\Blog\Models\Post;
 use RainLab\Blog\Models\Settings;
 use Initbiz\SeoStorm\Models\Settings as SeoStormSettings;
+use System\Models\EventLog;
 
 class PostsController extends ApiController
 {
@@ -85,8 +86,13 @@ class PostsController extends ApiController
         if (!$this->checkEditor()) {
             $post = $post->isPublished();
         }
+        
+        $post = $post->first();
 
-        $post = $post->firstOrFail();
+        if(!$post) {
+            EventLog::add('!ERROR Pagina Blog Post pe Link-ul: "pefoc.ro/'.$slug.'" -> Blog inexistent sau lipsa redirect', 'error');
+            return ['404'=>true];
+        }
         
         // Get next Post
         $arNextPost = NULL;
