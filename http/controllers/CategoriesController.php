@@ -26,6 +26,7 @@ class CategoriesController extends ApiController
      */
     public function show($slug)
     {
+        $extension = getImageExtensionByAgent();
         $category = Category::where('slug', $slug)->first();
         $arCategory = [
             "id"            => $category->id,
@@ -33,7 +34,7 @@ class CategoriesController extends ApiController
             "slug"          => $category->slug,
             "code"          => $category->code,
             "description"   => $category->description,
-            "header_image"  => $category->header_image ? $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']) : null,
+            "header_image"  => $category->header_image ? $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => $extension]) : null,
             'posts'         => $category->posts,
             'seo_params'    =>  $this->formatSeoParam($category)
         ];
@@ -53,10 +54,11 @@ class CategoriesController extends ApiController
             if(empty($arSeoParam['seo_description'])) {
                 $arSeoParam['seo_description'] = strip_tags($category->description);
             }
+            $extension = getImageExtensionByAgent();
             if(!empty($category->preview_image)) {
-                $arSeoParam['image'] = $category->preview_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arSeoParam['image'] = $category->preview_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => $extension]);
             } elseif(!empty($category->header_image)) {
-                $arSeoParam['image'] = $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => 'webp']);
+                $arSeoParam['image'] = $category->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => $extension]);
             }
             if(empty($arSeoParam['canonical_url'])) {
                 $arSeoParam['canonical_url'] = '/blog-seminee/' . $category->slug;
