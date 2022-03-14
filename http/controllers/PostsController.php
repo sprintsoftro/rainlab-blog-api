@@ -52,10 +52,15 @@ class PostsController extends ApiController
 
         $extension = getImageExtensionByAgent();
 
+        $isDesktop = isDesktop();
+        $imageWidth = $isDesktop ? 256 : 400;
+        $imageHeight = $isDesktop ? 188 : 300;
+
+
         // Change image format to webp for performance
         foreach ($posts as $key => $post) {
             foreach ($post->featured_images as $key1 => $image) {
-                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb(256, 158, ['mode' => 'fit', 'quality' => 100, 'extension' => $extension]);
+                $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb($imageWidth, $imageHeight, ['mode' => 'fit', 'quality' => 100, 'extension' => $extension]);
             }
             // Only necessary data
             $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], [
