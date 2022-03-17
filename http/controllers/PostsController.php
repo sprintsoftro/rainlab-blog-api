@@ -97,7 +97,9 @@ class PostsController extends ApiController
         $post = $post->first();
 
         if(!$post) {
-            EventLog::add('!ERROR Pagina Blog Post pe Link-ul: "pefoc.ro/'.$slug.'" -> Blog inexistent sau lipsa redirect', 'error');
+            $userAgent = request()->userAgent();
+            $referer = request()->headers->get('referer');
+            EventLog::add('!ERROR Pagina Blog Post pe Link-ul: "pefoc.ro/'.$slug.'" -> Blog inexistent sau lipsa redirect /// AGENT:'.$userAgent.' /// REFERER: '.$referer, 'error');
             return ['404'=>true];
         }
         
