@@ -177,7 +177,7 @@ class PostsController extends ApiController
         // Format header_image
         $arPost['header_image']['path'] = $post->header_image 
             ? $post->header_image->getThumb(0, 0, ['mode' => 'auto', 'quality' => 100, 'extension' => $extension]) 
-            : $image->getThumb(0, 0, ['quality' => 100, 'extension' => $extension]);
+            : null;
 
         unset($arPost['content_html']);
         
