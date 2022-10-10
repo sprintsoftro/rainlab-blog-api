@@ -70,7 +70,8 @@ class PostsController extends ApiController
                 'featured_images',
                 'published',
                 'published_at',
-                'user'
+                'user',
+                'excerpt'
             ];
             
             if(input('with_categories')) {
