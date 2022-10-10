@@ -63,15 +63,21 @@ class PostsController extends ApiController
                 $arPosts['data'][$key]['featured_images'][$key1]['path'] = $image->getThumb($imageWidth, $imageHeight, ['mode' => 'fit', 'quality' => 100, 'extension' => $extension]);
             }
             // Only necessary data
-            $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], [
+            $selectedData = [
                 'id',
                 'title',
                 'slug',
                 'featured_images',
                 'published',
                 'published_at',
-                'user',
-            ]);
+                'user'
+            ];
+            
+            if(input('with_categories')) {
+                $selectedData[] = 'categories';
+            }
+
+            $arPosts['data'][$key] = Arr::only($arPosts['data'][$key], $selectedData);
         }
 
         return $arPosts;
