@@ -97,6 +97,11 @@ class PostsController extends ApiController
             ? $post->transWhere('slug', $slug)->with('user', 'featured_images', 'header_image', 'seostorm_options')
             : $post->where('slug', $slug)->with('user', 'featured_images', 'header_image', 'seostorm_options');
 
+        // Get categories
+        if(input('with_categories')) {
+            $post->with('categories');
+        }
+
         if (!$this->checkEditor()) {
             $post = $post->isPublished();
         }
